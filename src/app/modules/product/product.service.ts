@@ -4,15 +4,27 @@ import { Product } from "./product.model";
 
 
 const createProductIntoDB = async (productData: TProduct) => {
-    console.log(productData);
     const result = await Product.create(productData);
     return result;
 };
 
 
-const getAllStudents = async () => {
+const getAllProducts = async (searchTerm?: string) => {
+
+    if (searchTerm) {
+        const regex = new RegExp(searchTerm, 'i');
+        const result = await Product.find({
+            $or: [
+                { name: regex },
+                { description: regex },
+                { category: regex },
+                { tags: regex }
+            ]
+        });
+        return result;
+    }
     const result = await Product.find();
-    return result; 
+    return result;
 };
 
 
@@ -39,7 +51,7 @@ const deleteProductById = async (id: string) => {
 
 export const ProductServices = {
     createProductIntoDB,
-    getAllStudents,
+    getAllProducts,
     getSpecificProduct,
     updateProductInfo,
     deleteProductById

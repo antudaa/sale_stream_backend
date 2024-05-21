@@ -6,13 +6,13 @@ import { ProductServices } from "./product.service";
 const createProduct = async (req: Request, res: Response) => {
     try {
         const { products: productInfo } = req.body;
-        const zodParserdData = ProductValidationSchema.parse(productInfo);
+        const zodParserdProductData = ProductValidationSchema.parse(productInfo);
 
-        const result = await ProductServices.createProductIntoDB(zodParserdData);
+        const result = await ProductServices.createProductIntoDB(zodParserdProductData);
         if (!result) {
             return res.status(404).json({
                 success: false,
-                message: `Product not found!`
+                message: `Product creation failed!`
             })
         }
 
@@ -33,8 +33,9 @@ const createProduct = async (req: Request, res: Response) => {
 
 const getAllProducts = async (req: Request, res: Response) => {
     try {
-        const result = await ProductServices.getAllStudents();
-        if (!result) {
+        const searchTerm = req.query.searchTerm as string;
+        const result = await ProductServices.getAllProducts(searchTerm);
+        if (!result.length) {
             return res.status(404).json({
                 success: false,
                 message: `Product not found!`
