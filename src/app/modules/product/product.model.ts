@@ -90,10 +90,10 @@ ProductSchema.statics.isProductAvailable = async function (productId: string, qu
     );
 
     if (!updatedProduct) {
-        throw new Error("Failed to update the product info!");
+        return false;
     }
 
-    return updatedProduct;
+    return true;
 };
 
 export const Product = model<TProduct, ProductModel>(`Product`, ProductSchema);

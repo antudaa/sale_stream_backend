@@ -11,18 +11,9 @@ const createOrder = async (req: Request, res: Response) => {
         const { productId, quantity, price } = orderInfo;
         const zodParsedOrderData = OrderValidationSchema.parse(orderInfo);
         const productInfo = await Product.isProductAvailable(productId, quantity, price);
-        console.log(productInfo);
 
         if (zodParsedOrderData && productInfo) {
-
             const result = await OrderServices.createOrderInDB(zodParsedOrderData);
-
-            if (!result) {
-                return res.status(404).json({
-                    success: false,
-                    message: `Order creation failed!`,
-                })
-            }
 
             res.status(200).json({
                 success: true,
@@ -33,7 +24,7 @@ const createOrder = async (req: Request, res: Response) => {
     } catch (error: any) {
         res.status(500).json({
             success: false,
-            message: error.issues[0].message || `Something went wrong.`,
+            message: error.message || `Something went wrong.`,
             error: error,
         })
     }
@@ -63,7 +54,7 @@ const getOrders = async (req: Request, res: Response) => {
     } catch (error: any) {
         res.status(500).json({
             success: false,
-            message: error.message || `Something went wrong.`,
+            message: error.message || `Something went wrong!`,
             error: error,
         })
     }
