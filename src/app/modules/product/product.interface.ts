@@ -1,3 +1,4 @@
+import { Model } from "mongoose";
 
 export interface TVariant {
     type: string,
@@ -18,3 +19,8 @@ export interface TProduct {
     variants: TVariant[],
     inventory: TInventory,
 };
+
+// Creating Method to check is product available in stock or not.
+export interface ProductModel extends Model<TProduct> {
+    isProductAvailable(productID: string, quantity: number, price: number): Promise<TProduct | null>
+}

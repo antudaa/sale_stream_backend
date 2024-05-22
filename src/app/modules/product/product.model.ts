@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { TInventory, TProduct, TVariant } from "./product.interface";
+import { ProductModel, TInventory, TProduct, TVariant } from "./product.interface";
 
 
 const VariantSchema = new Schema<TVariant>({
@@ -28,7 +28,7 @@ const InventorySchema = new Schema<TInventory>({
 });
 
 
-const ProductSchema = new Schema<TProduct>({
+const ProductSchema = new Schema<TProduct, ProductModel>({
     name: {
         type: String,
         required: [true, `Product name is required.`],
@@ -60,5 +60,39 @@ const ProductSchema = new Schema<TProduct>({
     },
 });
 
-export const Product = model<TProduct>(`Product`, ProductSchema);
+
+ProductSchema.statics.isProductAvailable = async function (productId: string, quantity: number, price: number) {
+    const product = await this.findById(productId);
+
+    if (!product) {
+        throw new Error(`Product not found`);
+    }
+
+    if (product.inventory.quantity < quantity) {
+        throw new Error(`Insufficient quanitity in stock!`);
+    }
+
+    if (product.price * quantity !== price) {
+        throw new Error(`Total price does not match the product price!`);
+    }
+
+    const remainingQuantity = product.inventory.quantity - quantity;
+    const inStock = remainingQuantity > 0;
+    const updatedProduct = await this.findByIdAndUpdate(
+        productId,
+        {
+            "inventory.quantity": remainingQuantity,
+            "inventory.inStock": inStock
+        },
+        { new: true }
+    );
+
+    if (!updatedProduct) {
+        throw new Error("Failed to update the product info");
+    }
+
+    return updatedProduct;
+};
+
+export const Product = model<TProduct, ProductModel>(`Product`, ProductSchema);
 

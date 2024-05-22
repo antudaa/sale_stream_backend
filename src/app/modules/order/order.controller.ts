@@ -1,28 +1,35 @@
 import { Request, Response } from "express";
 import OrderValidationSchema from "./order.validation";
 import { OrderServices } from "./order.service";
+import { Product } from "../product/product.model";
 
 
 
 const createOrder = async (req: Request, res: Response) => {
     try {
         const { order: orderInfo } = req.body;
+        const { productId, quantity, price } = orderInfo;
         const zodParsedOrderData = OrderValidationSchema.parse(orderInfo);
 
-        const result = await OrderServices.createOrderInDB(zodParsedOrderData);
+        if (zodParsedOrderData) {
+            const productInfo = await Product.isProductAvailable(productId, quantity, price);
 
-        if (!result) {
-            return res.status(404).json({
-                success: false,
-                message: `Order not found!`
+
+            const result = await OrderServices.createOrderInDB(zodParsedOrderData);
+
+            if (!result) {
+                return res.status(404).json({
+                    success: false,
+                    message: `Order creation failed!`
+                })
+            }
+
+            res.status(200).json({
+                success: true,
+                message: `Order created successfully!`,
+                data: result,
             })
         }
-
-        res.status(200).json({
-            success: true,
-            message: `Order created successfully!`,
-            data: result,
-        })
     } catch (error: any) {
         res.status(500).json({
             success: false,
