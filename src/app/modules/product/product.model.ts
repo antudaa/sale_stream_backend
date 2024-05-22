@@ -5,12 +5,12 @@ import { ProductModel, TInventory, TProduct, TVariant } from "./product.interfac
 const VariantSchema = new Schema<TVariant>({
     type: {
         type: String,
-        required: [true, `Variant type is required.`],
+        required: true,
         maxlength: [30, `Variant type cannot be more then 30 characters.`],
     },
     value: {
         type: String,
-        required: [true, `Variant Value is required.`],
+        required: true,
         maxlength: [30, `Variant value cannot be more then 30 characters.`]
     }
 });
@@ -19,7 +19,7 @@ const VariantSchema = new Schema<TVariant>({
 const InventorySchema = new Schema<TInventory>({
     quantity: {
         type: Number,
-        required: [true, `Inventory quantity is required.`],
+        required: true,
     },
     inStock: {
         type: Boolean,
@@ -31,32 +31,32 @@ const InventorySchema = new Schema<TInventory>({
 const ProductSchema = new Schema<TProduct, ProductModel>({
     name: {
         type: String,
-        required: [true, `Product name is required.`],
+        required: true,
         unique: true,
     },
     description: {
         type: String,
-        required: [true, `Product description is required.`],
+        required: true,
     },
     price: {
         type: Number,
-        required: [true, `Product price is required.`],
+        required: true,
     },
     category: {
         type: String,
-        required: [true, `Product category is required.`],
+        required: true,
     },
     tags: {
         type: [String],
-        required: [true, `Product tags are required.`],
+        required: true,
     },
     variants: {
         type: [VariantSchema],
-        required: [true, `Porduct variant is required.`],
+        required: true,
     },
     inventory: {
         type: InventorySchema, // Using a single InventorySchema object
-        required: [true, `Inventory is required.`],
+        required: true,
     },
 });
 
@@ -72,12 +72,14 @@ ProductSchema.statics.isProductAvailable = async function (productId: string, qu
         throw new Error(`Insufficient quanitity in stock!`);
     }
 
-    if (product.price * quantity !== price) {
-        throw new Error(`Total price does not match the product price!`);
+    const totalPrice = product.price * quantity;
+    if (totalPrice !== price) {
+        throw new Error(`Price does not match! Total price is ${totalPrice}tk.`);
     }
 
     const remainingQuantity = product.inventory.quantity - quantity;
     const inStock = remainingQuantity > 0;
+
     const updatedProduct = await this.findByIdAndUpdate(
         productId,
         {
@@ -88,7 +90,7 @@ ProductSchema.statics.isProductAvailable = async function (productId: string, qu
     );
 
     if (!updatedProduct) {
-        throw new Error("Failed to update the product info");
+        throw new Error("Failed to update the product info!");
     }
 
     return updatedProduct;
