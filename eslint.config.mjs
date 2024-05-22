@@ -1,19 +1,19 @@
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
-import node from "eslint-plugin-node";
-import tsPlugin from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
-import prettierConfig from "eslint-config-prettier";
+import globals from 'globals';
+import pluginJs from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import node from 'eslint-plugin-node';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import prettierConfig from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ["**/node_modules/", ".dist/"],
-    files: ["src/**/*.ts", "src/**/*.tsx"],
+    ignores: ['**/node_modules/', '.dist/'],
+    files: ['src/**/*.ts', 'src/**/*.tsx'],
     languageOptions: {
       globals: globals.node,
-      ecmaVersion: "latest",
-      sourceType: "module",
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       parser: tsParser,
     },
   },
@@ -22,15 +22,15 @@ export default [
   {
     plugins: {
       node,
-      "@typescript-eslint": tsPlugin,
+      '@typescript-eslint': tsPlugin,
     },
     rules: {
-      "no-unused-vars": "warn",
-      semi: ["error", "always"],
-      "no-unused-expressions": "error",
-      "prefer-const": "error",
-      "no-console": "warn",
-      "no-undef": "error",
+      'no-unused-vars': 'warn',
+      semi: ['error', 'always'],
+      'no-unused-expressions': 'error',
+      'prefer-const': 'error',
+      'no-console': 'warn',
+      'no-undef': 'error',
     },
   },
   prettierConfig,
