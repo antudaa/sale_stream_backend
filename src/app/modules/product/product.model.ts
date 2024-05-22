@@ -55,12 +55,13 @@ const ProductSchema = new Schema<TProduct, ProductModel>({
         required: true,
     },
     inventory: {
-        type: InventorySchema, // Using a single InventorySchema object
+        type: InventorySchema,
         required: true,
     },
 });
 
 
+// Method to check available quantiy in inventory and inStock status.
 ProductSchema.statics.isProductAvailable = async function (productId: string, quantity: number, price: number) {
     const product = await this.findById(productId);
 

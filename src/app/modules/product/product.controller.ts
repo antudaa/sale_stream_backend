@@ -5,7 +5,7 @@ import { ProductServices } from "./product.service";
 
 const createProduct = async (req: Request, res: Response) => {
     try {
-        const { products: productInfo } = req.body;
+        const productInfo = req.body;
         const zodParserdProductData = ProductValidationSchema.parse(productInfo);
 
         const result = await ProductServices.createProductIntoDB(zodParserdProductData);
@@ -70,6 +70,13 @@ const getSpecificProduct = async (req: Request, res: Response) => {
             });
         }
         const result = await ProductServices.getSpecificProduct(productId);
+        if (!result) {
+            return res.status(404).json({
+                success: false,
+                message: `No product available with this id!`,
+            });
+        }
+
         res.status(200).json({
             success: true,
             message: `Product fetched successfully!`,

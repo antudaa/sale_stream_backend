@@ -4,7 +4,7 @@ import { OrderControllers } from './order.controller';
 
 const router = express.Router();
 
-router.post(`/`, OrderControllers.createOrder); // Create Order Route
-router.get(`/`, OrderControllers.getOrders); // Route to Retrieve All Orders and Retrieve orders by useremail.
+router.post(`/`, OrderControllers.createOrder); // Create order
+router.get(`/`, OrderControllers.getOrders); // Get orders
 
 export const OrderRoutes = router;
