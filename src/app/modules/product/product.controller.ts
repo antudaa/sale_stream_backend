@@ -31,7 +31,7 @@ const createProduct = async (req: Request, res: Response) => {
     }
 };
 
-const getAllProducts = async (req: Request, res: Response) => {
+const getProducts = async (req: Request, res: Response) => {
     try {
         const searchTerm = req.query.searchTerm as string;
         const result = await ProductServices.getAllProducts(searchTerm);
@@ -59,15 +59,14 @@ const getAllProducts = async (req: Request, res: Response) => {
 const getSpecificProduct = async (req: Request, res: Response) => {
     try {
         const { productId } = req.params;
-        console.log(req.params);
-        const result = await ProductServices.getSpecificProduct(productId.toString());
-        if (!result) {
+        // Validating the length of productId before querying. Cause we know mongodb always provides us a 24 char id.
+        if (productId.length !== 24) {
             return res.status(404).json({
                 success: false,
-                message: `Product not found!`
-            })
+                message: `No product available with this id!`,
+            });
         }
-
+        const result = await ProductServices.getSpecificProduct(productId);
         res.status(200).json({
             success: true,
             message: `Product fetched successfully!`,
@@ -86,7 +85,6 @@ const updateProductInfo = async (req: Request, res: Response) => {
     try {
         const { productId } = req.params;
         const updatedProductData = req.body;
-        console.log(productId);
         const result = await ProductServices.updateProductInfo(productId.toString(), updatedProductData);
 
         if (!result) {
@@ -141,7 +139,7 @@ const deleteProduct = async (req: Request, res: Response) => {
 
 export const ProductControllers = {
     createProduct,
-    getAllProducts,
+    getProducts,
     getSpecificProduct,
     updateProductInfo,
     deleteProduct,

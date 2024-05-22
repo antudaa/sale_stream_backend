@@ -10,17 +10,17 @@ const createOrder = async (req: Request, res: Response) => {
         const { order: orderInfo } = req.body;
         const { productId, quantity, price } = orderInfo;
         const zodParsedOrderData = OrderValidationSchema.parse(orderInfo);
+        const productInfo = await Product.isProductAvailable(productId, quantity, price);
+        console.log(productInfo);
 
-        if (zodParsedOrderData) {
-            const productInfo = await Product.isProductAvailable(productId, quantity, price);
-
+        if (zodParsedOrderData && productInfo) {
 
             const result = await OrderServices.createOrderInDB(zodParsedOrderData);
 
             if (!result) {
                 return res.status(404).json({
                     success: false,
-                    message: `Order creation failed!`
+                    message: `Order creation failed!`,
                 })
             }
 
@@ -33,7 +33,7 @@ const createOrder = async (req: Request, res: Response) => {
     } catch (error: any) {
         res.status(500).json({
             success: false,
-            message: error.message || `Something went wrong.`,
+            message: error.issues[0].message || `Something went wrong.`,
             error: error,
         })
     }
@@ -48,7 +48,7 @@ const getOrders = async (req: Request, res: Response) => {
         if (!result.length) {
             return res.status(404).json({
                 success: false,
-                message: `Order not found!`
+                message: `No order found with this id!`
             })
         }
 
@@ -63,7 +63,7 @@ const getOrders = async (req: Request, res: Response) => {
     } catch (error: any) {
         res.status(500).json({
             success: false,
-            message: error.message || `No Order found.`,
+            message: error.message || `Something went wrong.`,
             error: error,
         })
     }
