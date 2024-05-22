@@ -39,14 +39,10 @@ const updateProductInfo = async (id: string, updatedProductData: Partial<TProduc
     return result;
 };
 
-
 const deleteProductById = async (id: string) => {
     const result = await Product.findByIdAndDelete(id);
     return result;
 };
-
-
-
 
 
 export const ProductServices = {

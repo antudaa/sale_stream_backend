@@ -9,9 +9,9 @@ const createOrderInDB = async (orderData: TOrder) => {
 
 const getOrders = async (email?: string) => {
     if (email) {
-        const regex = new RegExp(email, 'i');
+        // const regex = new RegExp(email, 'i');
         const result = await Order.find({
-            email: regex
+            email: email
         })
         return result;
     };

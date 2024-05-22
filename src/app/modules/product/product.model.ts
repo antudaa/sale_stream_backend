@@ -65,11 +65,11 @@ ProductSchema.statics.isProductAvailable = async function (productId: string, qu
     const product = await this.findById(productId);
 
     if (!product) {
-        throw new Error(`Product not found`);
+        throw new Error(`Order not found`);
     }
 
     if (product.inventory.quantity < quantity) {
-        throw new Error(`Insufficient quanitity in stock!`);
+        throw new Error(`Insufficient quantity available in inventory`);
     }
 
     const totalPrice = product.price * quantity;
