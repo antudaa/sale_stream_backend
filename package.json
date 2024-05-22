@@ -1,7 +1,7 @@
 {
-  "name": "assignment_2",
+  "name": "sale_stream_backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./dist/server.js",
   "scripts": {
     "build": "tsc",
     "start:prod": "node ./dist/server.js",
