@@ -24,7 +24,7 @@ const createOrder = async (req: Request, res: Response) => {
     } catch (error: any) {
         res.status(500).json({
             success: false,
-            message: error.message || `Something went wrong.`,
+            message: error.message ? error.message : `Somethign went wrong!`,
             error: error,
         })
     }
@@ -39,7 +39,7 @@ const getOrders = async (req: Request, res: Response) => {
         if (!result.length) {
             return res.status(404).json({
                 success: false,
-                message: `No order found with this id!`
+                message: `No order found with this email!`
             })
         }
 
@@ -54,7 +54,7 @@ const getOrders = async (req: Request, res: Response) => {
     } catch (error: any) {
         res.status(500).json({
             success: false,
-            message: error.message || `Something went wrong!`,
+            message: error.message || `Something went wrong!`, //|| `Something went wrong!`
             error: error,
         })
     }
